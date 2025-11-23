@@ -1,0 +1,2078 @@
+
+<!doctype html>
+<html lang="id">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PEPADU KARBON - Platform Pembelajaran</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+    body {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    .container {
+      width: 95%;
+      max-width: 1200px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+      margin: 20px auto;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+
+    .header h1 {
+      margin: 0 0 10px 0;
+      font-size: 2.5em;
+      font-weight: bold;
+    }
+
+    .header p {
+      margin: 0;
+      font-size: 1.1em;
+      opacity: 0.9;
+    }
+
+    .user-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 30px;
+      background: #f8f9fa;
+      border-bottom: 2px solid #e9ecef;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .user-info-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: white;
+      padding: 10px 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .user-info-item strong {
+      color: #667eea;
+    }
+
+    .content {
+      padding: 30px;
+    }
+
+    .welcome-screen, .assessment-screen, .learning-screen {
+      display: none;
+    }
+
+    .welcome-screen.active, .assessment-screen.active, .learning-screen.active {
+      display: block;
+    }
+
+    .input-group {
+      margin: 30px 0;
+    }
+
+    .input-group label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: 600;
+      color: #333;
+      font-size: 1.1em;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 15px;
+      border: 2px solid #e9ecef;
+      border-radius: 10px;
+      font-size: 1em;
+      transition: border-color 0.3s;
+    }
+
+    .input-group input:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 15px 40px;
+      border-radius: 10px;
+      font-size: 1.1em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: inline-block;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .question-card {
+      background: #f8f9fa;
+      padding: 25px;
+      border-radius: 15px;
+      margin: 20px 0;
+      border-left: 5px solid #667eea;
+    }
+
+    .question-card h3 {
+      margin: 0 0 20px 0;
+      color: #333;
+      font-size: 1.3em;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .option {
+      background: white;
+      padding: 15px 20px;
+      border-radius: 10px;
+      border: 2px solid #e9ecef;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .option:hover {
+      border-color: #667eea;
+      background: #f0f4ff;
+    }
+
+    .option.selected {
+      border-color: #667eea;
+      background: #667eea;
+      color: white;
+    }
+
+    .option input[type="radio"] {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
+
+    .flipbook-container {
+      position: relative;
+      max-width: 800px;
+      margin: 0 auto;
+      background: #f8f9fa;
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .flipbook-page {
+      width: 100%;
+      min-height: 500px;
+      background: white;
+      border-radius: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .flipbook-page img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    .flipbook-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
+      gap: 15px;
+    }
+
+    .flipbook-controls button {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.3s;
+    }
+
+    .flipbook-controls button:hover:not(:disabled) {
+      background: #764ba2;
+    }
+
+    .flipbook-controls button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .page-indicator {
+      font-weight: 600;
+      color: #667eea;
+      font-size: 1.1em;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #667eea;
+      font-size: 1.2em;
+    }
+
+    .loading::after {
+      content: '...';
+      animation: dots 1.5s steps(4, end) infinite;
+    }
+
+    @keyframes dots {
+      0%, 20% { content: '.'; }
+      40% { content: '..'; }
+      60%, 100% { content: '...'; }
+    }
+
+    .error-message {
+      background: #fee;
+      color: #c33;
+      padding: 15px;
+      border-radius: 10px;
+      margin: 20px 0;
+      border-left: 5px solid #c33;
+    }
+
+    .success-message {
+      background: #efe;
+      color: #3c3;
+      padding: 15px;
+      border-radius: 10px;
+      margin: 20px 0;
+      border-left: 5px solid #3c3;
+    }
+
+    .timer-icon::before {
+      content: '⏱️';
+      margin-right: 5px;
+    }
+
+    .user-icon::before {
+      content: '👤';
+      margin-right: 5px;
+    }
+
+    .level-icon::before {
+      content: '🎯';
+      margin-right: 5px;
+    }
+
+    .navigation-menu {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      padding: 20px 30px;
+      background: white;
+      border-bottom: 2px solid #e9ecef;
+    }
+
+    .nav-btn {
+      background: white;
+      color: #667eea;
+      border: 2px solid #667eea;
+      padding: 12px 30px;
+      border-radius: 10px;
+      font-size: 1.1em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .nav-btn:hover {
+      background: #f0f4ff;
+      transform: translateY(-2px);
+    }
+
+    .nav-btn.active {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-color: transparent;
+    }
+
+    .video-container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .video-list {
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
+
+    .video-card {
+      background: #f8f9fa;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s;
+    }
+
+    .video-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .video-card h3 {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 15px 20px;
+      margin: 0;
+      font-size: 1.2em;
+    }
+
+    .video-card video {
+      width: 100%;
+      display: block;
+      background: black;
+    }
+
+    .materi-content, .video-content, .games-content, .chat-content {
+      display: none;
+    }
+
+    .materi-content.active, .video-content.active, .games-content.active, .chat-content.active {
+      display: block;
+    }
+
+    .games-container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .level-section {
+      margin-bottom: 40px;
+    }
+
+    .level-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px;
+      border-radius: 15px 15px 0 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .level-header h3 {
+      margin: 0;
+      font-size: 1.4em;
+    }
+
+    .level-badge {
+      background: rgba(255, 255, 255, 0.3);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.9em;
+    }
+
+    .level-badge.locked {
+      background: rgba(0, 0, 0, 0.3);
+    }
+
+    .game-card {
+      background: #f8f9fa;
+      border-radius: 0 0 15px 15px;
+      padding: 30px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .game-card.locked {
+      opacity: 0.6;
+      pointer-events: none;
+      position: relative;
+    }
+
+    .game-card.locked::after {
+      content: '🔒 Selesaikan level sebelumnya untuk membuka';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 15px 30px;
+      border-radius: 10px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .quiz-question {
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      border-left: 5px solid #667eea;
+    }
+
+    .quiz-question h4 {
+      margin: 0 0 15px 0;
+      color: #333;
+      font-size: 1.2em;
+    }
+
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .quiz-option {
+      background: #f8f9fa;
+      padding: 12px 18px;
+      border-radius: 8px;
+      border: 2px solid #e9ecef;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .quiz-option:hover {
+      border-color: #667eea;
+      background: #f0f4ff;
+    }
+
+    .quiz-option.selected {
+      border-color: #667eea;
+      background: #667eea;
+      color: white;
+    }
+
+    .quiz-option.correct {
+      border-color: #28a745;
+      background: #28a745;
+      color: white;
+    }
+
+    .quiz-option.incorrect {
+      border-color: #dc3545;
+      background: #dc3545;
+      color: white;
+    }
+
+    .game-result {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .game-result.success {
+      border: 3px solid #28a745;
+    }
+
+    .game-result.failed {
+      border: 3px solid #dc3545;
+    }
+
+    .game-result h3 {
+      margin: 0 0 15px 0;
+      font-size: 2em;
+    }
+
+    .game-result p {
+      font-size: 1.2em;
+      margin: 10px 0;
+    }
+
+    .game-actions {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    .chat-container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #f8f9fa;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      height: 600px;
+    }
+
+    .chat-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .chat-header img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: white;
+      padding: 5px;
+    }
+
+    .chat-header-info h3 {
+      margin: 0;
+      font-size: 1.3em;
+    }
+
+    .chat-header-info p {
+      margin: 5px 0 0 0;
+      font-size: 0.9em;
+      opacity: 0.9;
+    }
+
+    .province-selector {
+      padding: 30px;
+      text-align: center;
+    }
+
+    .province-selector h3 {
+      margin: 0 0 20px 0;
+      color: #333;
+    }
+
+    .province-selector select {
+      width: 100%;
+      max-width: 400px;
+      padding: 15px;
+      border: 2px solid #e9ecef;
+      border-radius: 10px;
+      font-size: 1em;
+      margin-bottom: 20px;
+    }
+
+    .province-selector select:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      background: white;
+    }
+
+    .chat-message {
+      margin-bottom: 20px;
+      display: flex;
+      gap: 10px;
+      animation: fadeIn 0.3s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .chat-message.user {
+      flex-direction: row-reverse;
+    }
+
+    .chat-message-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .chat-message-avatar img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .chat-message-content {
+      max-width: 70%;
+      padding: 12px 18px;
+      border-radius: 15px;
+      line-height: 1.5;
+    }
+
+    .chat-message.user .chat-message-content {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-bottom-right-radius: 5px;
+    }
+
+    .chat-message.assistant .chat-message-content {
+      background: #f8f9fa;
+      color: #333;
+      border-bottom-left-radius: 5px;
+      border: 1px solid #e9ecef;
+    }
+
+    .chat-input-area {
+      padding: 20px;
+      background: #f8f9fa;
+      border-top: 2px solid #e9ecef;
+    }
+
+    .chat-input-form {
+      display: flex;
+      gap: 10px;
+    }
+
+    .chat-input-form input {
+      flex: 1;
+      padding: 15px;
+      border: 2px solid #e9ecef;
+      border-radius: 10px;
+      font-size: 1em;
+    }
+
+    .chat-input-form input:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .chat-input-form button {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .chat-input-form button:hover:not(:disabled) {
+      transform: translateY(-2px);
+    }
+
+    .chat-input-form button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .typing-indicator {
+      display: flex;
+      gap: 5px;
+      padding: 15px;
+    }
+
+    .typing-indicator span {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #667eea;
+      animation: typing 1.4s infinite;
+    }
+
+    .typing-indicator span:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .typing-indicator span:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes typing {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-10px); }
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .profile-popup {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 10000;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .profile-popup.active {
+      display: flex;
+    }
+
+    .profile-popup-content {
+      background: white;
+      border-radius: 20px;
+      max-width: 700px;
+      width: 100%;
+      max-height: 90%;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      position: relative;
+    }
+
+    .profile-popup-close {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: #dc3545;
+      color: white;
+      border: none;
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      font-size: 1.2em;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s;
+      z-index: 1;
+    }
+
+    .profile-popup-close:hover {
+      transform: scale(1.1);
+      background: #c82333;
+    }
+
+    .profile-popup-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 30px 20px 20px 20px;
+      border-radius: 20px 20px 0 0;
+      text-align: center;
+    }
+
+    .profile-popup-header h2 {
+      margin: 0;
+      font-size: 1.8em;
+    }
+
+    .profile-popup-body {
+      padding: 30px;
+      display: flex;
+      gap: 25px;
+      align-items: flex-start;
+    }
+
+    .profile-popup-image {
+      flex-shrink: 0;
+    }
+
+    .profile-popup-image img {
+      width: 180px;
+      height: 220px;
+      border-radius: 15px;
+      object-fit: cover;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .profile-popup-text {
+      flex: 1;
+    }
+
+    .profile-popup-text p {
+      line-height: 1.8;
+      color: #333;
+      margin: 0;
+      text-align: justify;
+    }
+
+    .about-link {
+      color: #667eea;
+      text-decoration: underline;
+      cursor: pointer;
+      font-weight: 600;
+      transition: color 0.3s;
+    }
+
+    .about-link:hover {
+      color: #764ba2;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+
+      .container {
+        width: 100%;
+        margin: 10px 0;
+        border-radius: 15px;
+      }
+
+      .header {
+        padding: 20px 15px;
+      }
+
+      .header h1 {
+        font-size: 1.5em;
+        line-height: 1.3;
+      }
+
+      .header p {
+        font-size: 0.95em;
+        line-height: 1.4;
+      }
+
+      .user-info {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 15px;
+      }
+
+      .navigation-menu {
+        flex-direction: column;
+        padding: 15px;
+      }
+
+      .nav-btn {
+        width: 100%;
+      }
+
+      .content {
+        padding: 20px 15px;
+      }
+
+      .welcome-screen h2 {
+        font-size: 1.4em;
+        line-height: 1.3;
+      }
+
+      .welcome-screen p {
+        font-size: 1em;
+        line-height: 1.5;
+      }
+
+      .input-group {
+        margin: 20px 0;
+      }
+
+      .input-group label {
+        font-size: 1em;
+      }
+
+      .input-group input {
+        padding: 12px;
+        font-size: 16px;
+      }
+
+      .btn {
+        width: 100%;
+        padding: 14px 20px;
+        font-size: 1em;
+      }
+
+      .flipbook-page {
+        min-height: 400px;
+      }
+
+      .video-card h3 {
+        font-size: 1em;
+      }
+
+      .question-card h3 {
+        font-size: 1.1em;
+      }
+
+      .option {
+        padding: 12px 15px;
+        font-size: 0.95em;
+      }
+
+      .chat-container {
+        height: 500px;
+      }
+
+      .profile-popup-body {
+        flex-direction: column;
+        padding: 20px;
+      }
+
+      .profile-popup-image img {
+        width: 150px;
+        height: 180px;
+        margin: 0 auto;
+        display: block;
+      }
+
+      .profile-popup-text p {
+        font-size: 0.95em;
+      }
+
+      .profile-popup-header h2 {
+        font-size: 1.4em;
+      }
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body><!-- Loading Screen -->
+  <div id="initial-loading" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999;">
+   <div style="text-align: center; color: white;">
+    <h1 style="font-size: 2.5em; margin-bottom: 20px; animation: fadeIn 0.5s;">PEPADU KARBON</h1>
+    <div style="width: 60px; height: 60px; border: 5px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto;"></div>
+    <p style="margin-top: 20px; font-size: 1.1em; opacity: 0.9;">Memuat aplikasi...</p>
+   </div>
+  </div><!-- Abe Profile Popup -->
+  <div class="profile-popup" id="abe-profile-popup" onclick="closeAbeProfile(event)">
+   <div class="profile-popup-content" onclick="event.stopPropagation()"><button class="profile-popup-close" onclick="closeAbeProfile()">×</button>
+    <div class="profile-popup-header">
+     <h2>Berkenalan dengan Abe 🎓</h2>
+    </div>
+    <div class="profile-popup-body">
+     <div class="profile-popup-image"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/Menteri_pendidikan_indonesia.jpg/500px-Menteri_pendidikan_indonesia.jpg" alt="Prof. Dr. Abdul Mu'ti" onerror="this.src=''; this.alt='Mentor Abe';">
+     </div>
+     <div class="profile-popup-text">
+      <p>Abe adalah Chat Pintar yang mengidolakan <strong>Prof. Dr. Abdul Mu'ti, M.Ed.</strong> (Menteri Pendidikan Indonesia). Beliau memiliki visi progresif dalam pendidikan yang tidak hanya fokus pada kecerdasan kognitif, tetapi juga pada pembentukan karakter, toleransi, dan kesadaran sosial yang tinggi. Oleh karena itu, sosok beliau memberikan inspirasi sebagai panutan intelektual, moral, dan kepemimpinan publik yang berkomitmen penuh pada kemajuan bangsa dan nilai-nilai kemanusiaan.</p>
+     </div>
+    </div>
+   </div>
+  </div>
+  <div class="container">
+   <div class="header">
+    <h1 id="platform-title">PEPADU KARBON</h1>
+    <p id="platform-subtitle">Aplikasi Pejuang Lingkungan! Jadilah Kesatria Pepadu! Tantang Emisi, Selamatkan Bumi!</p>
+   </div>
+   <div class="user-info" id="user-info" style="display: none;">
+    <div class="user-info-item"><span class="user-icon"></span> <span><strong>Nama:</strong> <span id="display-name">-</span></span>
+    </div>
+    <div class="user-info-item"><span class="level-icon"></span> <span><strong>Level:</strong> <span id="display-level">-</span></span>
+    </div>
+    <div class="user-info-item"><span class="timer-icon"></span> <span><strong>Waktu Belajar:</strong> <span id="display-time">00:00:00</span></span>
+    </div>
+   </div>
+   <nav class="navigation-menu" id="navigation-menu" style="display: none;"><button class="nav-btn active" onclick="showLearningContent('materi')"> 📚 Cerita </button> <button class="nav-btn" onclick="showLearningContent('video')"> 🎥 Video </button> <button class="nav-btn" onclick="showLearningContent('games')"> 🎮 Games </button> <button class="nav-btn" onclick="showLearningContent('chat')"> <img src="https://xppfmghrhhrejnopnyir.supabase.co/storage/v1/object/public/pepadu/babe%20icon.png" alt="Abe" style="width: 24px; height: 24px; vertical-align: middle; margin-right: 5px;" onerror="this.style.display='none'"> Tanya Abe </button> <button class="nav-btn" onclick="openARExperience()"> 🔍 Jelajah AR </button>
+   </nav>
+   <div class="content"><!-- Welcome Screen -->
+    <div class="welcome-screen active" id="welcome-screen">
+     <h2 id="welcome-message">Selamat datang, teman belajar! 👋</h2>
+     <p>Mari kita mulai perjalanan belajar tentang Emisi Karbon bersama-sama.</p>
+     <div class="input-group"><label for="student-name">Siapa nama kamu?</label> <input type="text" id="student-name" placeholder="Masukkan nama kamu di sini...">
+     </div><button class="btn" id="start-btn" onclick="checkStudent()">Mulai Belajar</button>
+     <div id="welcome-message-area"></div>
+    </div><!-- Assessment Screen -->
+    <div class="assessment-screen" id="assessment-screen">
+     <h2 id="assessment-title">Asesmen Awal</h2>
+     <p>Mari kita lihat level pemahamanmu saat ini. Jawab pertanyaan berikut dengan jujur ya!</p>
+     <div id="question-container"></div>
+     <div style="margin-top: 30px; display: flex; gap: 15px;"><button class="btn" id="submit-answer-btn" onclick="submitAnswer()" disabled>Kirim Jawaban</button>
+     </div>
+    </div><!-- Learning Screen -->
+    <div class="learning-screen" id="learning-screen"><!-- Materi Content -->
+     <div class="materi-content active" id="materi-content">
+      <div class="flipbook-container">
+       <div class="flipbook-page" id="flipbook-page">
+        <div class="loading">
+         Memuat materi
+        </div>
+       </div>
+       <div class="flipbook-controls"><button id="prev-btn" onclick="previousPage()" disabled>← Sebelumnya</button> <span class="page-indicator"> Halaman <span id="current-page">1</span> dari <span id="total-pages">1</span> </span> <button id="next-btn" onclick="nextPage()">Selanjutnya →</button>
+       </div>
+      </div>
+     </div><!-- Video Content -->
+     <div class="video-content" id="video-content">
+      <h2>Video Pembelajaran</h2>
+      <div class="video-container">
+       <div class="video-list">
+        <div class="video-card">
+         <h3>1. Yuk Ketahui Pentingnya Perubahan Iklim!</h3>
+         <video controls controlslist="nodownload"><source src="https://xppfmghrhhrejnopnyir.supabase.co/storage/v1/object/public/pepadu/Yuk%20Ketahui%20Pentingnya%20Perubahan%20Iklim!.mp4" type="video/mp4"> Browser kamu tidak mendukung video HTML5.
+         </video>
+        </div>
+        <div class="video-card">
+         <h3>2. Perubahan Iklim Kian Nyata, Ini Fakta yang Perlu Kamu Ketahui!</h3>
+         <video controls controlslist="nodownload"><source src="https://xppfmghrhhrejnopnyir.supabase.co/storage/v1/object/public/pepadu/Perubahan%20Iklim%20Kian%20Nyata,%20Ini%20Fakta%20yang%20Perlu%20Kamu%20Ketahui!.mp4" type="video/mp4"> Browser kamu tidak mendukung video HTML5.
+         </video>
+        </div>
+        <div class="video-card">
+         <h3>3. Penyebab Emisi Karbon, Dampak Buruk dan Cara Menguranginya</h3>
+         <video controls controlslist="nodownload"><source src="https://xppfmghrhhrejnopnyir.supabase.co/storage/v1/object/public/pepadu/Penyebab%20Emisi%20Karbon,%20Dampak%20Buruk%20dan%20Cara%20Menguranginya%20-%20Lindungi%20Hutan%20(360p,%20h264).mp4" type="video/mp4"> Browser kamu tidak mendukung video HTML5.
+         </video>
+        </div>
+        <div class="video-card">
+         <h3>4. Apa Itu Emisi Karbon &amp; Dampaknya</h3>
+         <video controls controlslist="nodownload"><source src="https://xppfmghrhhrejnopnyir.supabase.co/storage/v1/object/public/pepadu/Apa%20Itu%20EMISI%20KARBON%20Dampak%20dari%20EMISI%20KARBON%20-%20Filda%20channel%20(360p,%20h264).mp4" type="video/mp4"> Browser kamu tidak mendukung video HTML5.
+         </video>
+        </div>
+       </div>
+      </div>
+     </div><!-- Games Content -->
+     <div class="games-content" id="games-content">
+      <h2>Games Pembelajaran</h2>
+      <p style="text-align: center; color: #666; margin-bottom: 20px;">Selesaikan permainan sesuai level untuk membuka level berikutnya!</p>
+      <div style="text-align: center; margin-bottom: 30px;"><button class="btn" onclick="openFlatPanelMode()" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); display: inline-flex; align-items: center; gap: 10px;"> 🎯 Mode Flat Panel </button>
+      </div>
+      <div class="games-container" id="games-container">
+       <div class="loading">
+        Memuat permainan...
+       </div>
+      </div>
+     </div><!-- Chat Content -->
+     <div class="chat-content" id="chat-content">
+      <div class="chat-container">
+       <div class="chat-header"><img src="https://xppfmghrhhrejnopnyir.supabase.co/storage/v1/object/public/pepadu/babe%20icon.png" alt="Abe" onerror="this.src=''; this.alt='🤖';" style="width: 50px; height: 50px; object-fit: contain;">
+        <div class="chat-header-info">
+         <h3>Abe - Chat Pintar</h3>
+         <p><span class="about-link" onclick="showAbeProfile()">Berkenalan dengan Abe</span> 🌟</p>
+        </div>
+       </div>
+       <div class="province-selector" id="province-selector">
+        <h3>Halo! Dari provinsi mana kamu berasal?</h3>
+        <p style="color: #666; margin-bottom: 20px;">Ini akan membantu saya memberikan contoh yang relevan dengan daerahmu</p><select id="province-select"> <option value="">Pilih Provinsi...</option> <option value="Aceh">Aceh</option> <option value="Sumatera Utara">Sumatera Utara</option> <option value="Sumatera Barat">Sumatera Barat</option> <option value="Riau">Riau</option> <option value="Kepulauan Riau">Kepulauan Riau</option> <option value="Jambi">Jambi</option> <option value="Sumatera Selatan">Sumatera Selatan</option> <option value="Bangka Belitung">Bangka Belitung</option> <option value="Bengkulu">Bengkulu</option> <option value="Lampung">Lampung</option> <option value="DKI Jakarta">DKI Jakarta</option> <option value="Banten">Banten</option> <option value="Jawa Barat">Jawa Barat</option> <option value="Jawa Tengah">Jawa Tengah</option> <option value="DI Yogyakarta">DI Yogyakarta</option> <option value="Jawa Timur">Jawa Timur</option> <option value="Bali">Bali</option> <option value="Nusa Tenggara Barat">Nusa Tenggara Barat</option> <option value="Nusa Tenggara Timur">Nusa Tenggara Timur</option> <option value="Kalimantan Barat">Kalimantan Barat</option> <option value="Kalimantan Tengah">Kalimantan Tengah</option> <option value="Kalimantan Selatan">Kalimantan Selatan</option> <option value="Kalimantan Timur">Kalimantan Timur</option> <option value="Kalimantan Utara">Kalimantan Utara</option> <option value="Sulawesi Utara">Sulawesi Utara</option> <option value="Sulawesi Tengah">Sulawesi Tengah</option> <option value="Sulawesi Selatan">Sulawesi Selatan</option> <option value="Sulawesi Tenggara">Sulawesi Tenggara</option> <option value="Gorontalo">Gorontalo</option> <option value="Sulawesi Barat">Sulawesi Barat</option> <option value="Maluku">Maluku</option> <option value="Maluku Utara">Maluku Utara</option> <option value="Papua">Papua</option> <option value="Papua Barat">Papua Barat</option> <option value="Papua Tengah">Papua Tengah</option> <option value="Papua Pegunungan">Papua Pegunungan</option> <option value="Papua Selatan">Papua Selatan</option> <option value="Papua Barat Daya">Papua Barat Daya</option> </select> <button class="btn" onclick="startChat()" id="start-chat-btn" disabled> Mulai Chat </button>
+       </div>
+       <div class="chat-messages" id="chat-messages" style="display: none;">
+       </div>
+       <div class="chat-input-area" id="chat-input-area" style="display: none;">
+        <form class="chat-input-form" onsubmit="sendMessage(event)"><input type="text" id="chat-input" placeholder="Ketik pertanyaanmu di sini..." autocomplete="off"> <button type="submit" id="send-btn">Kirim</button>
+        </form>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <script>
+    const API_ENDPOINT = 'https://script.google.com/macros/s/AKfycbx9JdK7zhXev9BIKR8r2DglFeWiou5z1F0uXAhtIX52Yl03tUGnA3zNquIwyXysGmOZjQ/exec';
+    
+    const defaultConfig = {
+      platform_title: 'PEPADU KARBON',
+      welcome_message: 'Selamat datang, teman belajar! 👋',
+      assessment_title: 'Asesmen Awal'
+    };
+
+    let currentStudent = {
+      name: '',
+      level: '',
+      hasAssessment: false
+    };
+
+    let assessmentQuestions = [];
+    let currentQuestionIndex = 0;
+    let lastCorrectLevel = 0;
+    let selectedAnswer = null;
+
+    let materialPages = [];
+    let currentPageIndex = 0;
+
+    let studyStartTime = null;
+    let totalStudyTime = 0;
+    let timerInterval = null;
+    let isTabVisible = true;
+
+    // Time tracking
+    function startTimer() {
+      studyStartTime = Date.now();
+      timerInterval = setInterval(updateTimer, 1000);
+    }
+
+    function pauseTimer() {
+      if (studyStartTime) {
+        totalStudyTime += Date.now() - studyStartTime;
+        studyStartTime = null;
+      }
+    }
+
+    function resumeTimer() {
+      if (!studyStartTime && isTabVisible) {
+        studyStartTime = Date.now();
+      }
+    }
+
+    function updateTimer() {
+      if (!studyStartTime) return;
+      
+      const currentTime = totalStudyTime + (Date.now() - studyStartTime);
+      const hours = Math.floor(currentTime / 3600000);
+      const minutes = Math.floor((currentTime % 3600000) / 60000);
+      const seconds = Math.floor((currentTime % 60000) / 1000);
+      
+      document.getElementById('display-time').textContent = 
+        `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    }
+
+    function getTotalStudyTimeInSeconds() {
+      let total = totalStudyTime;
+      if (studyStartTime) {
+        total += Date.now() - studyStartTime;
+      }
+      return Math.floor(total / 1000);
+    }
+
+    // Visibility change handler
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        isTabVisible = false;
+        pauseTimer();
+      } else {
+        isTabVisible = true;
+        resumeTimer();
+      }
+    });
+
+    // API calls
+    async function apiCall(action, data = {}) {
+      try {
+        const response = await fetch(API_ENDPOINT, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'text/plain;charset=utf-8'
+          },
+          body: JSON.stringify({ action, ...data })
+        });
+        
+        const result = await response.json();
+        return result;
+      } catch (error) {
+        console.error('API Error:', error);
+        return { success: false, error: error.message };
+      }
+    }
+
+    async function checkStudent() {
+      const name = document.getElementById('student-name').value.trim();
+      
+      if (!name) {
+        showMessage('welcome-message-area', 'Mohon masukkan nama kamu terlebih dahulu.', 'error');
+        return;
+      }
+
+      document.getElementById('start-btn').disabled = true;
+      showMessage('welcome-message-area', 'Memeriksa data...', 'loading');
+
+      const result = await apiCall('checkStudent', { name });
+
+      if (result.success) {
+        currentStudent.name = name;
+        currentStudent.hasAssessment = result.hasAssessment;
+        currentStudent.level = result.level || '';
+
+        document.getElementById('display-name').textContent = name;
+        document.getElementById('user-info').style.display = 'flex';
+
+        if (result.hasAssessment) {
+          document.getElementById('display-level').textContent = result.level;
+          showMessage('welcome-message-area', `Selamat datang kembali! Level kamu: ${result.level}`, 'success');
+          setTimeout(() => {
+            loadMaterials();
+          }, 2000);
+        } else {
+          showMessage('welcome-message-area', 'Mari kita mulai dengan asesmen awal!', 'success');
+          setTimeout(() => {
+            loadAssessment();
+          }, 2000);
+        }
+      } else {
+        showMessage('welcome-message-area', 'Terjadi kesalahan. Silakan coba lagi.', 'error');
+        document.getElementById('start-btn').disabled = false;
+      }
+    }
+
+    async function loadAssessment() {
+      // Soal asesmen langsung di HTML - 2 soal per level sesuai taksonomi SOLO
+      assessmentQuestions = [
+        // Level 1: Prestructural/Unistructural - Memahami satu aspek
+        {
+          level: 'Unistructural',
+          question: 'Apa yang dimaksud dengan emisi karbon?',
+          options: [
+            'Gas yang dikeluarkan dari pembakaran bahan bakar',
+            'Jenis tanaman hijau',
+            'Alat untuk mengukur suhu',
+            'Nama sebuah planet'
+          ],
+          correctAnswer: 0
+        },
+        {
+          level: 'Unistructural',
+          question: 'Manakah yang merupakan sumber emisi karbon?',
+          options: [
+            'Pohon di hutan',
+            'Kendaraan bermotor',
+            'Air laut',
+            'Angin'
+          ],
+          correctAnswer: 1
+        },
+        // Level 2: Multistructural - Memahami beberapa aspek terpisah
+        {
+          level: 'Multistructural',
+          question: 'Sebutkan 3 dampak utama dari emisi karbon yang berlebihan:',
+          options: [
+            'Pemanasan global, pencairan es kutub, dan kenaikan permukaan laut',
+            'Hujan lebih sering, angin kencang, dan petir',
+            'Tanaman tumbuh lebih cepat, udara lebih sejuk, dan air lebih bersih',
+            'Tidak ada dampak yang signifikan'
+          ],
+          correctAnswer: 0
+        },
+        {
+          level: 'Multistructural',
+          question: 'Apa saja sektor yang menghasilkan emisi karbon?',
+          options: [
+            'Transportasi, industri, pembangkit listrik, dan pertanian',
+            'Hanya transportasi saja',
+            'Hanya industri saja',
+            'Hanya pembangkit listrik saja'
+          ],
+          correctAnswer: 0
+        },
+        // Level 3: Relational - Menghubungkan berbagai aspek
+        {
+          level: 'Relational',
+          question: 'Bagaimana hubungan antara deforestasi (penebangan hutan) dengan peningkatan emisi karbon dan perubahan iklim?',
+          options: [
+            'Pohon yang ditebang tidak bisa menyerap CO2, sehingga CO2 di atmosfer meningkat dan mempercepat pemanasan global',
+            'Deforestasi tidak ada hubungannya dengan emisi karbon',
+            'Deforestasi justru mengurangi emisi karbon',
+            'Hanya mempengaruhi hewan di hutan saja'
+          ],
+          correctAnswer: 0
+        },
+        {
+          level: 'Relational',
+          question: 'Mengapa penggunaan energi terbarukan dapat mengurangi emisi karbon secara menyeluruh?',
+          options: [
+            'Energi terbarukan tidak menghasilkan CO2 saat produksi listrik, mengurangi ketergantungan pada bahan bakar fosil, dan menciptakan siklus energi yang berkelanjutan',
+            'Energi terbarukan lebih murah saja',
+            'Energi terbarukan hanya untuk rumah tangga',
+            'Tidak ada hubungan dengan emisi karbon'
+          ],
+          correctAnswer: 0
+        },
+        // Level 4: Extended Abstract - Berpikir luas dan kreatif
+        {
+          level: 'Extended Abstract',
+          question: 'Jika kamu diminta merancang kota masa depan yang net-zero emission, bagaimana kamu akan mengintegrasikan transportasi, energi, dan pengelolaan limbah?',
+          options: [
+            'Transportasi publik listrik terintegrasi, energi 100% terbarukan dengan smart grid, dan sistem daur ulang otomatis yang mengubah limbah menjadi energi',
+            'Hanya menggunakan mobil listrik',
+            'Hanya memasang panel surya',
+            'Tidak perlu perubahan sistem'
+          ],
+          correctAnswer: 0
+        },
+        {
+          level: 'Extended Abstract',
+          question: 'Bagaimana konsep ekonomi sirkular dapat diterapkan untuk mengurangi emisi karbon di tingkat global dan lokal secara bersamaan?',
+          options: [
+            'Daur ulang material mengurangi produksi baru (global), komunitas lokal mengolah sampah organik menjadi kompos (lokal), menciptakan sistem tertutup yang meminimalkan limbah dan emisi',
+            'Hanya fokus pada daur ulang plastik',
+            'Ekonomi sirkular hanya untuk negara maju',
+            'Tidak ada hubungan dengan emisi karbon'
+          ],
+          correctAnswer: 0
+        }
+      ];
+      
+      showScreen('assessment-screen');
+      startTimer();
+      displayQuestion();
+    }
+
+    function displayQuestion() {
+      if (currentQuestionIndex >= assessmentQuestions.length) {
+        finishAssessment();
+        return;
+      }
+
+      const question = assessmentQuestions[currentQuestionIndex];
+      const container = document.getElementById('question-container');
+      
+      container.innerHTML = `
+        <div class="question-card">
+          <h3>Soal ${currentQuestionIndex + 1} - Level ${question.level}</h3>
+          <p style="font-size: 1.1em; margin-bottom: 20px;">${question.question}</p>
+          <div class="options">
+            ${question.options.map((opt, idx) => `
+              <label class="option" onclick="selectOption(${idx})">
+                <input type="radio" name="answer" value="${idx}">
+                <span>${opt}</span>
+              </label>
+            `).join('')}
+          </div>
+        </div>
+      `;
+
+      selectedAnswer = null;
+      document.getElementById('submit-answer-btn').disabled = true;
+    }
+
+    function selectOption(index) {
+      selectedAnswer = index;
+      document.getElementById('submit-answer-btn').disabled = false;
+      
+      document.querySelectorAll('.option').forEach((opt, idx) => {
+        if (idx === index) {
+          opt.classList.add('selected');
+        } else {
+          opt.classList.remove('selected');
+        }
+      });
+    }
+
+    function submitAnswer() {
+      const question = assessmentQuestions[currentQuestionIndex];
+      const isCorrect = selectedAnswer === question.correctAnswer;
+
+      if (isCorrect) {
+        // Setiap 2 soal benar = naik 1 level
+        // Soal 0-1 (index 0,1) = Level 1 (Unistructural)
+        // Soal 2-3 (index 2,3) = Level 2 (Multistructural)
+        // Soal 4-5 (index 4,5) = Level 3 (Relational)
+        // Soal 6-7 (index 6,7) = Level 4 (Extended Abstract)
+        lastCorrectLevel = Math.floor((currentQuestionIndex + 2) / 2);
+        currentQuestionIndex++;
+        displayQuestion();
+      } else {
+        // Jika salah, langsung selesaikan asesmen dengan level terakhir yang benar
+        finishAssessment();
+      }
+    }
+
+    async function finishAssessment() {
+      const levelNames = ['Prestructural', 'Unistructural', 'Multistructural', 'Relational', 'Extended Abstract'];
+      // lastCorrectLevel: 0 = tidak ada yang benar (Prestructural)
+      // lastCorrectLevel: 1 = benar 1-2 soal (Unistructural), dst
+      const finalLevel = levelNames[lastCorrectLevel] || 'Prestructural';
+
+      currentStudent.level = finalLevel;
+      document.getElementById('display-level').textContent = finalLevel;
+
+      const studyTime = getTotalStudyTimeInSeconds();
+
+      await apiCall('saveAssessment', {
+        name: currentStudent.name,
+        level: finalLevel,
+        studyTime: studyTime
+      });
+
+      const container = document.getElementById('question-container');
+      container.innerHTML = `
+        <div class="success-message">
+          <h3>Asesmen Selesai! 🎉</h3>
+          <p>Level kamu: <strong>${finalLevel}</strong></p>
+          <p>Sekarang mari kita mulai belajar materi!</p>
+        </div>
+      `;
+
+      setTimeout(() => {
+        loadMaterials();
+      }, 3000);
+    }
+
+    async function loadMaterials() {
+      showScreen('learning-screen');
+      document.getElementById('navigation-menu').style.display = 'flex';
+      
+      // Start timer if not already started
+      if (!timerInterval) {
+        startTimer();
+      }
+      
+      const result = await apiCall('getMaterials');
+      
+      if (result.success && result.materials) {
+        materialPages = result.materials;
+        currentPageIndex = 0;
+        displayPage();
+      } else {
+        document.getElementById('flipbook-page').innerHTML = 
+          '<div class="error-message">Gagal memuat materi pembelajaran.</div>';
+      }
+    }
+
+    function showLearningContent(type) {
+      // Pause all videos when switching
+      document.querySelectorAll('video').forEach(video => {
+        video.pause();
+      });
+
+      // Update active button
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      event.target.classList.add('active');
+
+      // Show selected content
+      document.getElementById('materi-content').classList.remove('active');
+      document.getElementById('video-content').classList.remove('active');
+      document.getElementById('games-content').classList.remove('active');
+      document.getElementById('chat-content').classList.remove('active');
+
+      if (type === 'materi') {
+        document.getElementById('materi-content').classList.add('active');
+      } else if (type === 'video') {
+        document.getElementById('video-content').classList.add('active');
+      } else if (type === 'games') {
+        document.getElementById('games-content').classList.add('active');
+        loadGames();
+      } else if (type === 'chat') {
+        document.getElementById('chat-content').classList.add('active');
+      }
+    }
+
+    // Games data structure - Level 1 terbuka untuk Prestructural dan Unistructural
+    const gamesData = {
+      1: {
+        title: 'Level 1: Pengenalan Dasar',
+        description: 'Memahami satu aspek dari konsep emisi karbon',
+        requiredLevel: ['Prestructural', 'Unistructural'],
+        questions: [
+          {
+            question: 'Apa yang dimaksud dengan karbon dioksida (CO2)?',
+            options: ['Gas yang dihasilkan saat membakar sesuatu', 'Jenis makanan', 'Alat musik', 'Nama hewan'],
+            correct: 0
+          },
+          {
+            question: 'Manakah yang merupakan sumber emisi karbon?',
+            options: ['Pohon hijau', 'Kendaraan bermotor', 'Air bersih', 'Batu'],
+            correct: 1
+          },
+          {
+            question: 'Apa yang terjadi jika terlalu banyak CO2 di udara?',
+            options: ['Bumi menjadi lebih panas', 'Bumi menjadi lebih dingin', 'Tidak ada perubahan', 'Hujan lebih sering'],
+            correct: 0
+          }
+        ]
+      },
+      2: {
+        title: 'Level 2: Memahami Beberapa Aspek',
+        description: 'Memahami berbagai aspek emisi karbon secara terpisah',
+        requiredLevel: ['Multistructural'],
+        questions: [
+          {
+            question: 'Sebutkan 3 sumber utama emisi karbon dari aktivitas manusia:',
+            options: ['Transportasi, industri, dan pembangkit listrik', 'Pohon, air, dan tanah', 'Matahari, bulan, dan bintang', 'Hewan, tumbuhan, dan manusia'],
+            correct: 0
+          },
+          {
+            question: 'Bagaimana hutan membantu mengurangi CO2 di udara?',
+            options: ['Pohon menyerap CO2 untuk fotosintesis', 'Hutan menghasilkan lebih banyak CO2', 'Hutan tidak berpengaruh', 'Hutan membuat udara lebih panas'],
+            correct: 0
+          },
+          {
+            question: 'Apa perbedaan antara energi fosil dan energi terbarukan dalam menghasilkan emisi?',
+            options: ['Energi fosil menghasilkan CO2, energi terbarukan tidak', 'Keduanya sama saja', 'Energi terbarukan lebih banyak CO2', 'Tidak ada perbedaan'],
+            correct: 0
+          }
+        ]
+      },
+      3: {
+        title: 'Level 3: Menghubungkan Konsep',
+        description: 'Menghubungkan berbagai aspek sebagai satu kesatuan',
+        requiredLevel: ['Relational'],
+        questions: [
+          {
+            question: 'Jelaskan hubungan antara deforestasi, emisi karbon, dan pemanasan global:',
+            options: ['Deforestasi mengurangi penyerapan CO2, meningkatkan emisi, mempercepat pemanasan global', 'Tidak ada hubungan antara ketiganya', 'Deforestasi mengurangi pemanasan global', 'Hanya mempengaruhi hutan saja'],
+            correct: 0
+          },
+          {
+            question: 'Bagaimana perubahan iklim mempengaruhi siklus air dan pertanian secara bersamaan?',
+            options: ['Perubahan pola hujan mengganggu siklus air dan hasil panen', 'Hanya mempengaruhi air saja', 'Hanya mempengaruhi pertanian', 'Tidak ada pengaruh'],
+            correct: 0
+          },
+          {
+            question: 'Mengapa pengurangan emisi karbon memerlukan kerjasama antara transportasi, energi, dan industri?',
+            options: ['Ketiga sektor saling terkait dan berkontribusi besar pada emisi total', 'Hanya satu sektor yang penting', 'Tidak perlu kerjasama', 'Cukup fokus pada transportasi saja'],
+            correct: 0
+          }
+        ]
+      },
+      4: {
+        title: 'Level 4: Berpikir Luas dan Kreatif',
+        description: 'Mengaitkan dengan topik lain dan menciptakan solusi baru',
+        requiredLevel: ['Extended Abstract'],
+        questions: [
+          {
+            question: 'Bagaimana konsep ekonomi sirkular dapat diterapkan untuk mengurangi emisi karbon di berbagai sektor?',
+            options: ['Daur ulang material mengurangi produksi baru, menghemat energi, dan menurunkan emisi di industri, transportasi, dan konsumsi', 'Hanya berlaku untuk sampah plastik', 'Tidak ada hubungan dengan emisi', 'Hanya untuk sektor industri'],
+            correct: 0
+          },
+          {
+            question: 'Jika kamu menjadi walikota, strategi inovatif apa yang akan kamu terapkan untuk membuat kotamu net-zero emission?',
+            options: ['Kombinasi transportasi publik listrik, bangunan hijau, energi terbarukan, dan program daur ulang komunitas', 'Hanya menanam pohon', 'Melarang semua kendaraan', 'Tidak perlu strategi khusus'],
+            correct: 0
+          },
+          {
+            question: 'Bagaimana teknologi blockchain dan AI dapat diintegrasikan untuk meningkatkan transparansi dan efektivitas perdagangan karbon global?',
+            options: ['Blockchain memverifikasi kredit karbon, AI mengoptimalkan alokasi dan memprediksi tren emisi', 'Tidak ada hubungan dengan karbon', 'Hanya untuk cryptocurrency', 'Teknologi tidak membantu'],
+            correct: 0
+          }
+        ]
+      }
+    };
+
+    let currentGame = null;
+    let currentGameAnswers = [];
+    let gameScore = 0;
+
+    async function loadGames() {
+      const container = document.getElementById('games-container');
+      const levelOrder = ['Prestructural', 'Unistructural', 'Multistructural', 'Relational', 'Extended Abstract'];
+      const currentLevelIndex = levelOrder.indexOf(currentStudent.level);
+
+      let html = '';
+      
+      // Iterate through game levels (1-4)
+      for (let gameLevel = 1; gameLevel <= 4; gameLevel++) {
+        const game = gamesData[gameLevel];
+        
+        // Check if current student level allows access to this game level
+        const canAccess = game.requiredLevel.includes(currentStudent.level);
+        
+        // Check if student has passed this level (their current level is higher)
+        let isCompleted = false;
+        if (gameLevel === 1) {
+          // Level 1 is completed if student is Multistructural or higher
+          isCompleted = currentLevelIndex >= 2;
+        } else if (gameLevel === 2) {
+          // Level 2 is completed if student is Relational or higher
+          isCompleted = currentLevelIndex >= 3;
+        } else if (gameLevel === 3) {
+          // Level 3 is completed if student is Extended Abstract
+          isCompleted = currentLevelIndex >= 4;
+        }
+        
+        // Level is locked if student hasn't reached required level
+        const isLocked = !canAccess && !isCompleted;
+        
+        html += `
+          <div class="level-section">
+            <div class="level-header">
+              <h3>${game.title}</h3>
+              <span class="level-badge ${isLocked ? 'locked' : ''}">
+                ${isCompleted ? '✅ Selesai' : isLocked ? '🔒 Terkunci' : '🎮 Tersedia'}
+              </span>
+            </div>
+            <div class="game-card ${isLocked ? 'locked' : ''}" id="game-level-${gameLevel}">
+              ${!isLocked ? `
+                <p style="color: #666; margin-bottom: 20px;">${game.description}</p>
+                <button class="btn" onclick="startGame(${gameLevel})">
+                  ${isCompleted ? '🔄 Main Lagi' : '▶️ Mulai Permainan'}
+                </button>
+              ` : ''}
+            </div>
+          </div>
+        `;
+      }
+
+      container.innerHTML = html;
+    }
+
+    function startGame(gameLevel) {
+      currentGame = gameLevel;
+      currentGameAnswers = [];
+      gameScore = 0;
+
+      const game = gamesData[gameLevel];
+      const cardId = `game-level-${gameLevel}`;
+      const card = document.getElementById(cardId);
+
+      let html = `
+        <p style="color: #666; margin-bottom: 20px;">${game.description}</p>
+        <div id="game-questions">
+      `;
+
+      game.questions.forEach((q, index) => {
+        html += `
+          <div class="quiz-question" id="question-${index}">
+            <h4>Pertanyaan ${index + 1}</h4>
+            <p style="margin-bottom: 15px;">${q.question}</p>
+            <div class="quiz-options">
+              ${q.options.map((opt, optIndex) => `
+                <div class="quiz-option" onclick="selectGameAnswer(${index}, ${optIndex})">
+                  ${opt}
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      });
+
+      html += `
+        </div>
+        <div class="game-actions">
+          <button class="btn" onclick="submitGame()" id="submit-game-btn" disabled>
+            Kirim Jawaban
+          </button>
+          <button class="btn" onclick="loadGames()" style="background: #6c757d;">
+            Batal
+          </button>
+        </div>
+        <div id="game-result-area"></div>
+      `;
+
+      card.innerHTML = html;
+    }
+
+    function selectGameAnswer(questionIndex, optionIndex) {
+      currentGameAnswers[questionIndex] = optionIndex;
+
+      // Update UI
+      const questionDiv = document.getElementById(`question-${questionIndex}`);
+      const options = questionDiv.querySelectorAll('.quiz-option');
+      options.forEach((opt, idx) => {
+        if (idx === optionIndex) {
+          opt.classList.add('selected');
+        } else {
+          opt.classList.remove('selected');
+        }
+      });
+
+      // Enable submit button if all questions answered
+      const game = gamesData[currentGame];
+      if (currentGameAnswers.filter(a => a !== undefined).length === game.questions.length) {
+        document.getElementById('submit-game-btn').disabled = false;
+      }
+    }
+
+    async function submitGame() {
+      const game = gamesData[currentGame];
+      gameScore = 0;
+
+      // Check answers and show results
+      game.questions.forEach((q, index) => {
+        const questionDiv = document.getElementById(`question-${index}`);
+        const options = questionDiv.querySelectorAll('.quiz-option');
+        
+        options.forEach((opt, optIndex) => {
+          opt.style.pointerEvents = 'none';
+          if (optIndex === q.correct) {
+            opt.classList.add('correct');
+          } else if (optIndex === currentGameAnswers[index]) {
+            opt.classList.add('incorrect');
+          }
+        });
+
+        if (currentGameAnswers[index] === q.correct) {
+          gameScore++;
+        }
+      });
+
+      const percentage = (gameScore / game.questions.length) * 100;
+      const passed = percentage >= 70;
+
+      // Show result
+      const resultArea = document.getElementById('game-result-area');
+      resultArea.innerHTML = `
+        <div class="game-result ${passed ? 'success' : 'failed'}">
+          <h3>${passed ? '🎉 Selamat!' : '😔 Belum Berhasil'}</h3>
+          <p>Skor kamu: ${gameScore} dari ${game.questions.length} (${percentage.toFixed(0)}%)</p>
+          <p>${passed ? 'Kamu berhasil menyelesaikan level ini!' : 'Coba lagi! Kamu perlu minimal 70% untuk lulus.'}</p>
+          ${passed ? '<p style="color: #28a745; font-weight: 600;">Level berikutnya telah terbuka! 🚀</p>' : ''}
+        </div>
+      `;
+
+      document.getElementById('submit-game-btn').disabled = true;
+
+      // Update level if passed
+      if (passed) {
+        const levelOrder = ['Prestructural', 'Unistructural', 'Multistructural', 'Relational', 'Extended Abstract'];
+        const currentLevelIndex = levelOrder.indexOf(currentStudent.level);
+        
+        // Determine new level based on game level completed
+        let newLevel = null;
+        if (currentGame === 1 && currentLevelIndex < 2) {
+          // Completing game level 1 advances to Multistructural
+          newLevel = 'Multistructural';
+        } else if (currentGame === 2 && currentLevelIndex < 3) {
+          // Completing game level 2 advances to Relational
+          newLevel = 'Relational';
+        } else if (currentGame === 3 && currentLevelIndex < 4) {
+          // Completing game level 3 advances to Extended Abstract
+          newLevel = 'Extended Abstract';
+        }
+        
+        if (newLevel) {
+          currentStudent.level = newLevel;
+          document.getElementById('display-level').textContent = newLevel;
+
+          // Update to spreadsheet
+          const studyTime = getTotalStudyTimeInSeconds();
+          await apiCall('updateLevel', {
+            name: currentStudent.name,
+            level: newLevel,
+            studyTime: studyTime
+          });
+
+          // Reload games after 3 seconds
+          setTimeout(() => {
+            loadGames();
+          }, 3000);
+        } else if (currentGame === 4) {
+          resultArea.innerHTML += `
+            <p style="color: #667eea; font-weight: 600; margin-top: 15px;">
+              🏆 Selamat! Kamu telah menyelesaikan semua level!
+            </p>
+          `;
+        }
+      }
+    }
+
+    function openARExperience() {
+      // Open AR simulation in new tab
+      window.open('https://kak-ewan.github.io/simulasi-emisi', '_blank', 'noopener,noreferrer');
+    }
+
+    function openFlatPanelMode() {
+      // Open Flat Panel Game in new tab
+      window.open('https://btidpcanva2023.my.canva.site/fpg', '_blank', 'noopener,noreferrer');
+    }
+
+    function displayPage() {
+      if (materialPages.length === 0) return;
+
+      const page = materialPages[currentPageIndex];
+      const pageElement = document.getElementById('flipbook-page');
+      
+      pageElement.innerHTML = `<img src="${page.imageUrl}" alt="Halaman ${page.pageNumber}" onerror="this.src=''; this.alt='Gambar gagal dimuat'; this.style.display='none';">`;
+      
+      document.getElementById('current-page').textContent = currentPageIndex + 1;
+      document.getElementById('total-pages').textContent = materialPages.length;
+      
+      document.getElementById('prev-btn').disabled = currentPageIndex === 0;
+      document.getElementById('next-btn').disabled = currentPageIndex === materialPages.length - 1;
+    }
+
+    function previousPage() {
+      if (currentPageIndex > 0) {
+        currentPageIndex--;
+        displayPage();
+      }
+    }
+
+    function nextPage() {
+      if (currentPageIndex < materialPages.length - 1) {
+        currentPageIndex++;
+        displayPage();
+      }
+    }
+
+    function showScreen(screenId) {
+      document.querySelectorAll('.welcome-screen, .assessment-screen, .learning-screen').forEach(screen => {
+        screen.classList.remove('active');
+      });
+      document.getElementById(screenId).classList.add('active');
+    }
+
+    function showMessage(elementId, message, type) {
+      const element = document.getElementById(elementId);
+      const className = type === 'error' ? 'error-message' : type === 'success' ? 'success-message' : 'loading';
+      element.innerHTML = `<div class="${className}">${message}</div>`;
+    }
+
+    // Chat functionality
+    const GEMINI_API_KEY = 'AIzaSyB60Fr_rs3qpDM51dS2eR8QolzgCYAfDxE';
+    const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
+    
+    let chatHistory = [];
+    let userProvince = '';
+
+    // Enable start chat button when province selected
+    document.getElementById('province-select').addEventListener('change', (e) => {
+      document.getElementById('start-chat-btn').disabled = !e.target.value;
+    });
+
+    function startChat() {
+      userProvince = document.getElementById('province-select').value;
+      
+      if (!userProvince) return;
+
+      // Hide province selector, show chat
+      document.getElementById('province-selector').style.display = 'none';
+      document.getElementById('chat-messages').style.display = 'block';
+      document.getElementById('chat-input-area').style.display = 'block';
+
+      // Initialize chat with system prompt
+      const systemPrompt = `Kamu adalah Abe (Chat Pintar), teman belajar yang ramah dan mendukung untuk siswa. Kamu mengidolakan Prof. Dr. Abdul Mu'ti, M.Ed. (Menteri Pendidikan Indonesia) yang memiliki visi progresif dalam pendidikan - tidak hanya fokus pada kecerdasan kognitif, tetapi juga pada pembentukan karakter, toleransi, dan kesadaran sosial yang tinggi. Tujuanmu adalah membantu siswa mengembangkan pemahaman mendalam dan pola pikir bertumbuh.
+
+Ikuti prinsip-prinsip ini:
+1. Jangan hanya memberikan jawaban langsung. Bimbing siswa melalui proses berpikir.
+2. Ajukan pertanyaan lanjutan untuk memperdalam pemahaman mereka.
+3. Berikan dorongan dan penguatan positif.
+4. WAJIB kaitkan konsep dengan contoh dan aplikasi dunia nyata dari kearifan lokal ${userProvince}. Sebutkan contoh spesifik seperti tradisi, budaya, tempat wisata, hasil alam, atau kebiasaan masyarakat ${userProvince} yang relevan dengan topik pembelajaran.
+5. Jika siswa kesulitan, uraikan topik kompleks menjadi bagian yang lebih sederhana.
+6. Tekankan nilai usaha dan ketekunan dalam belajar.
+7. Gunakan nada yang ramah dan percakapan sesuai dengan tingkat usia siswa.
+8. Sarankan topik terkait untuk dipelajari guna memperluas pengetahuan mereka.
+9. Akui ketika siswa menunjukkan penalaran yang baik atau membuat kemajuan.
+10. Bersikaplah sabar dan suportif, jangan merendahkan.
+
+PENTING: 
+- Siswa ini berasal dari ${userProvince}
+- JANGAN gunakan format markdown seperti **, ##, atau _. Tulis teks biasa saja.
+- Gunakan emoji untuk membuat percakapan lebih menarik
+- Selalu kaitkan penjelasan dengan konteks lokal ${userProvince}
+- Responsmu harus edukatif, menarik, dan menumbuhkan kecintaan belajar
+- SELALU GUNAKAN BAHASA INDONESIA`;
+
+      chatHistory = [
+        {
+          role: 'user',
+          parts: [{ text: systemPrompt }]
+        },
+        {
+          role: 'model',
+          parts: [{ text: 'Baik, saya siap membantu sebagai teman belajar yang suportif!' }]
+        }
+      ];
+
+      // Add welcome message
+      addMessageToChat('assistant', `Halo! Senang bertemu denganmu! 👋\n\nAku Abe, Chat Pintar yang siap membantumu belajar. Aku di sini untuk membantumu memahami berbagai konsep dengan cara yang menyenangkan dan bermakna. Jangan ragu untuk bertanya apa saja tentang Pepadu Karbon atau topik lainnya!\n\nAda yang ingin kamu pelajari hari ini? 🌟`);
+
+      // Focus on input
+      document.getElementById('chat-input').focus();
+    }
+
+    function addMessageToChat(role, content) {
+      const messagesContainer = document.getElementById('chat-messages');
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `chat-message ${role}`;
+
+      const avatarDiv = document.createElement('div');
+      avatarDiv.className = 'chat-message-avatar';
+      
+      if (role === 'assistant') {
+        avatarDiv.innerHTML = '<img src="https://xppfmghrhhrejnopnyir.supabase.co/storage/v1/object/public/pepadu/babe%20icon.png" alt="Abe" style="width: 40px; height: 40px; object-fit: contain;" onerror="this.src=\'\'; this.parentElement.innerHTML=\'🤖\';">';
+      } else {
+        avatarDiv.innerHTML = '<div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.2em;">👤</div>';
+      }
+
+      const contentDiv = document.createElement('div');
+      contentDiv.className = 'chat-message-content';
+      contentDiv.textContent = content;
+
+      messageDiv.appendChild(avatarDiv);
+      messageDiv.appendChild(contentDiv);
+      messagesContainer.appendChild(messageDiv);
+
+      // Scroll to bottom
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    function showTypingIndicator() {
+      const messagesContainer = document.getElementById('chat-messages');
+      const typingDiv = document.createElement('div');
+      typingDiv.className = 'chat-message assistant';
+      typingDiv.id = 'typing-indicator';
+
+      const avatarDiv = document.createElement('div');
+      avatarDiv.className = 'chat-message-avatar';
+      avatarDiv.innerHTML = '<img src="https://xppfmghrhhrejnopnyir.supabase.co/storage/v1/object/public/pepadu/babe%20icon.png" alt="Abe" style="width: 40px; height: 40px; object-fit: contain;" onerror="this.src=\'\'; this.parentElement.innerHTML=\'🤖\';">';
+
+      const indicatorDiv = document.createElement('div');
+      indicatorDiv.className = 'chat-message-content';
+      indicatorDiv.innerHTML = '<div class="typing-indicator"><span></span><span></span><span></span></div>';
+
+      typingDiv.appendChild(avatarDiv);
+      typingDiv.appendChild(indicatorDiv);
+      messagesContainer.appendChild(typingDiv);
+
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    function removeTypingIndicator() {
+      const typingIndicator = document.getElementById('typing-indicator');
+      if (typingIndicator) {
+        typingIndicator.remove();
+      }
+    }
+
+    async function sendMessage(event) {
+      event.preventDefault();
+
+      const input = document.getElementById('chat-input');
+      const message = input.value.trim();
+
+      if (!message) return;
+
+      // Add user message to chat
+      addMessageToChat('user', message);
+      input.value = '';
+
+      // Disable input while processing
+      input.disabled = true;
+      document.getElementById('send-btn').disabled = true;
+
+      // Show typing indicator
+      showTypingIndicator();
+
+      try {
+        // Add user message to history
+        chatHistory.push({
+          role: 'user',
+          parts: [{ text: message }]
+        });
+
+        // Call Gemini API
+        const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            contents: chatHistory
+          })
+        });
+
+        const data = await response.json();
+
+        if (data.candidates && data.candidates[0] && data.candidates[0].content) {
+          let assistantMessage = data.candidates[0].content.parts[0].text;
+
+          // Clean markdown formatting
+          assistantMessage = assistantMessage
+            .replace(/\*\*(.+?)\*\*/g, '$1')  // Remove bold **text**
+            .replace(/\*(.+?)\*/g, '$1')      // Remove italic *text*
+            .replace(/\_\_(.+?)\_\_/g, '$1')  // Remove bold __text__
+            .replace(/\_(.+?)\_/g, '$1')      // Remove italic _text_
+            .replace(/\#\#\# (.+)/g, '$1')    // Remove ### headers
+            .replace(/\#\# (.+)/g, '$1')      // Remove ## headers
+            .replace(/\# (.+)/g, '$1');       // Remove # headers
+
+          // Add assistant response to history
+          chatHistory.push({
+            role: 'model',
+            parts: [{ text: assistantMessage }]
+          });
+
+          // Remove typing indicator
+          removeTypingIndicator();
+
+          // Add assistant message to chat
+          addMessageToChat('assistant', assistantMessage);
+        } else {
+          removeTypingIndicator();
+          addMessageToChat('assistant', 'Maaf, aku mengalami kesulitan memproses pesanmu. Coba lagi ya! 😊');
+        }
+      } catch (error) {
+        console.error('Chat error:', error);
+        removeTypingIndicator();
+        addMessageToChat('assistant', 'Maaf, terjadi kesalahan. Pastikan koneksi internetmu stabil dan coba lagi! 🔄');
+      } finally {
+        // Re-enable input
+        input.disabled = false;
+        document.getElementById('send-btn').disabled = false;
+        input.focus();
+      }
+    }
+
+    // Save study time periodically
+    setInterval(async () => {
+      if (currentStudent.name && studyStartTime) {
+        const studyTime = getTotalStudyTimeInSeconds();
+        await apiCall('updateStudyTime', {
+          name: currentStudent.name,
+          studyTime: studyTime
+        });
+      }
+    }, 30000); // Every 30 seconds
+
+    // Element SDK implementation
+    async function onConfigChange(config) {
+      document.getElementById('platform-title').textContent = config.platform_title || defaultConfig.platform_title;
+      document.getElementById('welcome-message').textContent = config.welcome_message || defaultConfig.welcome_message;
+      document.getElementById('assessment-title').textContent = config.assessment_title || defaultConfig.assessment_title;
+    }
+
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig: defaultConfig,
+        onConfigChange: onConfigChange,
+        mapToCapabilities: (config) => ({
+          recolorables: [],
+          borderables: [],
+          fontEditable: undefined,
+          fontSizeable: undefined
+        }),
+        mapToEditPanelValues: (config) => new Map([
+          ['platform_title', config.platform_title || defaultConfig.platform_title],
+          ['welcome_message', config.welcome_message || defaultConfig.welcome_message],
+          ['assessment_title', config.assessment_title || defaultConfig.assessment_title]
+        ])
+      });
+    }
+
+    // Show Abe profile popup
+    function showAbeProfile() {
+      document.getElementById('abe-profile-popup').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    // Close Abe profile popup
+    function closeAbeProfile(event) {
+      if (!event || event.target.id === 'abe-profile-popup') {
+        document.getElementById('abe-profile-popup').classList.remove('active');
+        document.body.style.overflow = 'auto';
+      }
+    }
+
+    // Hide loading screen when page is ready
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const loadingScreen = document.getElementById('initial-loading');
+        if (loadingScreen) {
+          loadingScreen.style.opacity = '0';
+          loadingScreen.style.transition = 'opacity 0.5s';
+          setTimeout(() => {
+            loadingScreen.style.display = 'none';
+          }, 500);
+        }
+      }, 500);
+    });
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a313be9020d8bca',t:'MTc2MzkwNjg1OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
